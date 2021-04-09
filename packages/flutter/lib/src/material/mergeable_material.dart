@@ -108,8 +108,8 @@ class MergeableMaterial extends StatefulWidget {
     this.hasDividers = false,
     this.children = const <MergeableMaterialItem>[],
     this.dividerColor,
-    this.showTopDivider,
-    this.showBottomDivider,
+    this.showTopDivider = false,
+    this.showBottomDivider = false,
   }) : super(key: key);
 
   /// The children of the [MergeableMaterial].
