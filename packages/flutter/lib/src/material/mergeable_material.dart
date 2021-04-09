@@ -108,6 +108,8 @@ class MergeableMaterial extends StatefulWidget {
     this.hasDividers = false,
     this.children = const <MergeableMaterialItem>[],
     this.dividerColor,
+    this.showTopDivider = false,
+    this.showBottomDivider = false,
   }) : super(key: key);
 
   /// The children of the [MergeableMaterial].
@@ -134,6 +136,10 @@ class MergeableMaterial extends StatefulWidget {
   /// If `dividerColor` is null, then [DividerThemeData.color] is used. If that
   /// is null, then [ThemeData.dividerColor] is used.
   final Color dividerColor;
+
+  final bool showTopDivider;
+
+  final bool showBottomDivider;
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -584,6 +590,13 @@ class _MergeableMaterialState extends State<MergeableMaterial> with TickerProvid
             border = Border(
               top: hasTopDivider ? divider : BorderSide.none,
               bottom: hasBottomDivider ? divider : BorderSide.none,
+            );
+          }
+
+          if (widget.showTopDivider || widget.showBottomDivider) {
+            border = Border(
+              top: widget.showTopDivider ? divider : BorderSide.none,
+              bottom: widget.showBottomDivider ? divider : BorderSide.none,
             );
           }
 
