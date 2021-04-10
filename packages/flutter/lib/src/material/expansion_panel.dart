@@ -80,6 +80,7 @@ class ExpansionPanel {
     @required this.body,
     this.isExpanded = false,
     this.canTapOnHeader = false,
+    this.backgroundColor,
   }) : assert(headerBuilder != null),
        assert(body != null),
        assert(isExpanded != null),
@@ -103,6 +104,10 @@ class ExpansionPanel {
   /// Defaults to false.
   final bool canTapOnHeader;
 
+  /// Defines the background color of the panel.
+  ///
+  /// Defaults to [ThemeData.cardColor].
+  final Color backgroundColor;
 }
 
 /// An expansion panel that allows for radio-like functionality.
@@ -125,11 +130,13 @@ class ExpansionPanelRadio extends ExpansionPanel {
     @required ExpansionPanelHeaderBuilder headerBuilder,
     @required Widget body,
     bool canTapOnHeader = false,
+    Color backgroundColor = null,
   }) : assert(value != null),
       super(
         body: body,
         headerBuilder: headerBuilder,
         canTapOnHeader: canTapOnHeader,
+        backgroundColor: backgroundColor,
       );
 
   /// The value that uniquely identifies a radio panel so that the currently
@@ -233,6 +240,10 @@ class ExpansionPanelList extends StatefulWidget {
     this.expandedHeaderPadding = _kPanelHeaderExpandedDefaultPadding,
     this.dividerColor,
     this.elevation = 2,
+    this.expandIcon,
+    this.showTopDivider = false,
+    this.showBottomDivider = false,
+    this.expandGapSize = 16.0,
   }) : assert(children != null),
        assert(animationDuration != null),
        _allowOnlyOnePanelOpen = false,
@@ -324,6 +335,10 @@ class ExpansionPanelList extends StatefulWidget {
     this.expandedHeaderPadding = _kPanelHeaderExpandedDefaultPadding,
     this.dividerColor,
     this.elevation = 2,
+    this.expandIcon,
+    this.showTopDivider = false,
+    this.showBottomDivider = false,
+    this.expandGapSize = 16.0,
   }) : assert(children != null),
        assert(animationDuration != null),
        _allowOnlyOnePanelOpen = true,
@@ -384,6 +399,14 @@ class ExpansionPanelList extends StatefulWidget {
   ///
   /// By default, the value of elevation is 2.
   final int elevation;
+
+  final Icon expandIcon;
+
+  final bool showTopDivider;
+
+  final bool showBottomDivider;
+
+  final double expandGapSize;
 
   @override
   State<StatefulWidget> createState() => _ExpansionPanelListState();
@@ -479,7 +502,7 @@ class _ExpansionPanelListState extends State<ExpansionPanelList> {
 
     for (int index = 0; index < widget.children.length; index += 1) {
       if (_isChildExpanded(index) && index != 0 && !_isChildExpanded(index - 1))
-        items.add(MaterialGap(key: _SaltedKey<BuildContext, int>(context, index * 2 - 1)));
+        items.add(MaterialGap(key: _SaltedKey<BuildContext, int>(context, index * 2 - 1), size: widget.expandGapSize));
 
       final ExpansionPanel child = widget.children[index];
       final Widget headerWidget = child.headerBuilder(
@@ -490,6 +513,7 @@ class _ExpansionPanelListState extends State<ExpansionPanelList> {
       Widget expandIconContainer = Container(
         margin: const EdgeInsetsDirectional.only(end: 8.0),
         child: ExpandIcon(
+          expandIcon: widget.expandIcon,
           isExpanded: _isChildExpanded(index),
           padding: const EdgeInsets.all(16.0),
           onPressed: !child.canTapOnHeader
@@ -531,6 +555,7 @@ class _ExpansionPanelListState extends State<ExpansionPanelList> {
       }
       items.add(
         MaterialSlice(
+          color: child.backgroundColor,
           key: _SaltedKey<BuildContext, int>(context, index * 2),
           child: Column(
             children: <Widget>[
@@ -550,7 +575,7 @@ class _ExpansionPanelListState extends State<ExpansionPanelList> {
       );
 
       if (_isChildExpanded(index) && index != widget.children.length - 1)
-        items.add(MaterialGap(key: _SaltedKey<BuildContext, int>(context, index * 2 + 1)));
+        items.add(MaterialGap(key: _SaltedKey<BuildContext, int>(context, index * 2 + 1), size: widget.expandGapSize));
     }
 
     return MergeableMaterial(
@@ -558,6 +583,8 @@ class _ExpansionPanelListState extends State<ExpansionPanelList> {
       dividerColor: widget.dividerColor,
       elevation: widget.elevation,
       children: items,
+      showTopDivider: widget.showTopDivider,
+      showBottomDivider: widget.showBottomDivider,
     );
   }
 }
